@@ -1,0 +1,25 @@
+{
+  "name": "IT",
+  "words": [
+    "algorithm",
+    "variable",
+    "function",
+    "recursion",
+    "compiler",
+    "database",
+    "framework",
+    "interface",
+    "inheritance",
+    "polymorphism",
+    "refactoring",
+    "deployment",
+    "repository",
+    "middleware",
+    "encryption",
+    "abstraction",
+    "asynchronous",
+    "containerization",
+    "microservice",
+    "authentication"
+  ]
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "topic": "Code review",
+    "exchanges": [
+      {"bot": "Hey, can you take a look at my pull request when you have a moment?"},
+      {"bot": "It is mostly refactoring, nothing too complex."},
+      {"bot": "I also added a few unit tests for the edge cases we discussed."},
+      {"bot": "Let me know if you have any comments on the structure."},
+      {"bot": "Thanks, I appreciate the quick review!"}
+    ]
+  },
+  {
+    "topic": "Daily standup",
+    "exchanges": [
+      {"bot": "Good morning! What did you work on yesterday?"},
+      {"bot": "Any blockers or issues we should know about?"},
+      {"bot": "What is your plan for today?"},
+      {"bot": "Do you need help from anyone on the team?"},
+      {"bot": "Sounds good, let us sync again tomorrow."}
+    ]
+  },
+  {
+    "topic": "Tech support",
+    "exchanges": [
+      {"bot": "Hi! I have an issue with my local environment, do you have a minute?"},
+      {"bot": "The app crashes on startup after I pulled the latest changes."},
+      {"bot": "I already tried clearing the cache and reinstalling dependencies."},
+      {"bot": "Could it be related to the config file changes from yesterday?"},
+      {"bot": "That fixed it, thank you so much!"}
+    ]
+  },
+  {
+    "topic": "Planning a feature",
+    "exchanges": [
+      {"bot": "I want to discuss the approach for the new search feature."},
+      {"bot": "Should we index all fields or just the primary ones?"},
+      {"bot": "What about pagination, how many results per page?"},
+      {"bot": "Do we need to support filtering by date range as well?"},
+      {"bot": "Great, I will write up the spec and share it with the team."}
+    ]
+  }
+]

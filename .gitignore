@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+# IDE / editors
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Claude / Codex local state
+.claude/
+.codex/
+
+# User-generated state
+saves/
+user_config.json
+*.log
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Telegram sessions
+*.session
+*.session-journal
+
+# Images (excluded from repo per project policy)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.bmp

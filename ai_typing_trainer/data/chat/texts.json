@@ -1,0 +1,34 @@
+[
+  {
+    "text": "The Python programming language was created by Guido van Rossum and first released in 1991. It emphasizes code readability and simplicity, making it popular for beginners and experts alike.",
+    "keywords": ["python", "guido", "1991", "readability", "simplicity"]
+  },
+  {
+    "text": "A database index works like a book's table of contents. Instead of scanning every row, the database jumps directly to the location of the data, making queries dramatically faster.",
+    "keywords": ["index", "table", "scanning", "row", "queries", "faster"]
+  },
+  {
+    "text": "Git stores snapshots of your project, not differences between files. Every commit is a complete picture of all files at that moment, linked to the previous commit.",
+    "keywords": ["git", "snapshots", "commit", "files", "linked"]
+  },
+  {
+    "text": "The TCP protocol ensures reliable data delivery by breaking information into packets, sending them across the network, and reassembling them in the correct order at the destination.",
+    "keywords": ["tcp", "packets", "network", "order", "destination"]
+  },
+  {
+    "text": "Machine learning models learn patterns from training data. The more diverse and representative the data, the better the model generalizes to new, unseen examples.",
+    "keywords": ["learning", "patterns", "training", "data", "generalizes"]
+  },
+  {
+    "text": "In object-oriented programming, encapsulation means bundling data and the methods that operate on that data into a single unit, hiding internal details from the outside world.",
+    "keywords": ["encapsulation", "data", "methods", "unit", "hiding"]
+  },
+  {
+    "text": "The binary search algorithm finds an element in a sorted list by repeatedly dividing the search range in half, achieving logarithmic time complexity.",
+    "keywords": ["binary", "sorted", "dividing", "half", "logarithmic"]
+  },
+  {
+    "text": "Docker containers package an application with all its dependencies, ensuring it runs identically on any machine regardless of the underlying operating system.",
+    "keywords": ["docker", "containers", "dependencies", "identically", "machine"]
+  }
+]
