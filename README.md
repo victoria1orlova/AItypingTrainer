@@ -7,6 +7,7 @@ A CLI typing trainer with multiple practice modes.
 - **Word Trainer** — themed word sets with speed and accuracy stats
 - **Chat Trainer** — Reading Speed, Quick Responses, and AI Dialog modes
 - **Multiplication** — multiplication table drill with per-cell timing
+- **Traffic Rules** — Canadian driving-test ticket quiz (questions, options, explanations, images) backed by [`TrafficRules/`](TrafficRules/TrafficRules/README.md)
 - **Listening** — dictation (planned)
 - **Motivation** — points, leaderboard, achievements (planned)
 

@@ -11,12 +11,13 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 import config
 import i18n
-from modules import word_trainer, chat_trainer, listening, motivation, multiplication
+from modules import word_trainer, chat_trainer, pdd, listening, motivation, multiplication
 
 MODULES = [
     ("Word Trainer",        word_trainer.run),
     ("Chat Trainer",        chat_trainer.run),
     ("Multiplication",      multiplication.run),
+    ("Traffic Rules",       pdd.run),
     ("Listening",           listening.run),
     ("Motivation",          motivation.run),
 ]

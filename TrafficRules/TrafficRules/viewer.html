@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canadian Traffic Rules — Ticket Viewer</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f0f4f8;
+    color: #1a202c;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    background: #1a365d;
+    color: #fff;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+  header h1 { font-size: 1.1rem; font-weight: 600; flex: 1; }
+  header .stats { font-size: 0.82rem; opacity: 0.7; white-space: nowrap; }
+
+  .load-btn {
+    background: #3182ce;
+    color: #fff;
+    border: none;
+    padding: 7px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+  .load-btn:hover { background: #2b6cb0; }
+
+  .layout { display: flex; flex: 1; overflow: hidden; }
+
+  /* Sidebar */
+  .sidebar {
+    width: 300px;
+    flex-shrink: 0;
+    background: #fff;
+    border-right: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+  }
+  .search-wrap { padding: 12px; border-bottom: 1px solid #e2e8f0; }
+  .search-wrap input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-wrap input:focus { border-color: #3182ce; }
+
+  .ticket-list { overflow-y: auto; flex: 1; }
+
+  .ticket-item {
+    padding: 11px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f7fafc;
+    transition: background 0.1s;
+  }
+  .ticket-item:hover { background: #ebf8ff; }
+  .ticket-item.active { background: #bee3f8; border-left: 3px solid #3182ce; padding-left: 13px; }
+  .ticket-item .num { font-size: 0.72rem; color: #718096; margin-bottom: 3px; }
+  .ticket-item .text {
+    font-size: 0.83rem; line-height: 1.4; color: #2d3748;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .ticket-item .badges { margin-top: 5px; display: flex; gap: 4px; }
+  .badge { font-size: 0.68rem; padding: 1px 6px; border-radius: 10px; background: #e2e8f0; color: #4a5568; }
+  .badge.img { background: #c6f6d5; color: #276749; }
+
+  /* Main */
+  .main { flex: 1; overflow-y: auto; padding: 28px 32px; }
+
+  .empty-state {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; height: 100%; color: #a0aec0; gap: 12px;
+  }
+  .empty-state .icon { font-size: 3rem; }
+  .empty-state p { font-size: 0.95rem; text-align: center; line-height: 1.6; }
+
+  .ticket-card { max-width: 720px; }
+
+  .card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
+  .q-num {
+    background: #1a365d; color: #fff; font-size: 0.75rem; font-weight: 700;
+    padding: 3px 10px; border-radius: 12px; white-space: nowrap; margin-top: 3px; flex-shrink: 0;
+  }
+  .q-text { font-size: 1.05rem; font-weight: 600; line-height: 1.5; }
+
+  .ticket-image { width: 100%; max-width: 480px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
+  .no-image {
+    background: #f7fafc; border: 1px dashed #cbd5e0; border-radius: 10px;
+    padding: 16px; text-align: center; color: #a0aec0; font-size: 0.82rem; margin-bottom: 20px;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+  .option {
+    display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px;
+    border-radius: 8px; border: 1.5px solid #e2e8f0; background: #fff;
+    font-size: 0.9rem; line-height: 1.4;
+  }
+  .option.correct { border-color: #48bb78; background: #f0fff4; }
+  .option.wrong   { border-color: #fc8181; background: #fff5f5; }
+  .option .marker { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+  .option.correct .opt-text { color: #276749; font-weight: 500; }
+  .option.wrong   .opt-text { color: #c53030; }
+
+  .explanation {
+    background: #fffbeb; border: 1px solid #f6e05e; border-radius: 8px;
+    padding: 14px 18px; font-size: 0.88rem; line-height: 1.6; color: #744210;
+  }
+  .explanation strong { display: block; margin-bottom: 4px; color: #975a16; }
+
+  .nav-btns { display: flex; gap: 10px; margin-top: 28px; }
+  .nav-btn {
+    padding: 9px 20px; border-radius: 7px; border: none; cursor: pointer;
+    font-size: 0.88rem; font-weight: 500; transition: background 0.15s;
+  }
+  .nav-btn.prev { background: #e2e8f0; color: #4a5568; }
+  .nav-btn.prev:hover { background: #cbd5e0; }
+  .nav-btn.next { background: #1a365d; color: #fff; }
+  .nav-btn.next:hover { background: #2a4a7f; }
+  .nav-btn:disabled { opacity: 0.4; cursor: default; }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🚗 Canadian Traffic Rules — Tickets</h1>
+  <span class="stats" id="stats"></span>
+  <button class="load-btn" onclick="document.getElementById('fileInput').click()">Load tickets.db</button>
+  <input type="file" id="fileInput" accept=".db" style="display:none" onchange="loadDb(event)">
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="search-wrap">
+      <input type="text" id="search" placeholder="Search question text..." oninput="filterTickets()">
+    </div>
+    <div class="ticket-list" id="ticketList"></div>
+  </aside>
+  <main class="main" id="main">
+    <div class="empty-state">
+      <div class="icon">📂</div>
+      <p>Load the <strong>tickets.db</strong> file<br>to browse the tickets.</p>
+    </div>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
+<script>
+let db = null;
+let allTickets = [];
+let filtered = [];
+let current = -1;
+
+async function loadDb(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  document.getElementById('stats').textContent = 'Loading...';
+
+  const SQL = await initSqlJs({
+    locateFile: f => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/${f}`
+  });
+
+  const buf = await file.arrayBuffer();
+  db = new SQL.Database(new Uint8Array(buf));
+
+  allTickets = loadTickets();
+  filtered = allTickets;
+  document.getElementById('stats').textContent = `${allTickets.length} questions`;
+  renderList();
+  if (allTickets.length > 0) selectTicket(0);
+}
+
+function loadTickets() {
+  const ticketsResult = db.exec(`
+    SELECT id, question_num, question_text, explanation, has_image, image_path
+    FROM tickets ORDER BY id
+  `);
+  if (!ticketsResult.length) return [];
+
+  const optionsResult = db.exec(`
+    SELECT ticket_id, position, text, is_correct
+    FROM options ORDER BY ticket_id, position
+  `);
+
+  // Group options by ticket_id
+  const optionsMap = {};
+  if (optionsResult.length) {
+    for (const row of optionsResult[0].values) {
+      const [ticket_id, position, text, is_correct] = row;
+      if (!optionsMap[ticket_id]) optionsMap[ticket_id] = [];
+      optionsMap[ticket_id].push({ text, is_correct: !!is_correct });
+    }
+  }
+
+  return ticketsResult[0].values.map(row => {
+    const [id, question_num, question_text, explanation, has_image, image_path] = row;
+    return {
+      id, question_num, question_text, explanation,
+      has_image: !!has_image, image_path,
+      options: optionsMap[id] || []
+    };
+  });
+}
+
+function filterTickets() {
+  const q = document.getElementById('search').value.toLowerCase();
+  filtered = q
+    ? allTickets.filter(t => (t.question_text || '').toLowerCase().includes(q))
+    : allTickets;
+  renderList();
+  if (filtered.length > 0) selectTicket(0);
+  else document.getElementById('main').innerHTML =
+    '<div class="empty-state"><div class="icon">🔍</div><p>No matches found</p></div>';
+}
+
+function renderList() {
+  document.getElementById('ticketList').innerHTML = filtered.map((t, i) => `
+    <div class="ticket-item" id="item-${i}" onclick="selectTicket(${i})">
+      <div class="num">Question ${t.question_num ?? t.id}</div>
+      <div class="text">${esc(t.question_text || '—')}</div>
+      <div class="badges">
+        ${t.has_image ? '<span class="badge img">📷 photo</span>' : ''}
+        ${t.explanation ? '<span class="badge">💬 explanation</span>' : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectTicket(i) {
+  if (i < 0 || i >= filtered.length) return;
+  current = i;
+
+  document.querySelectorAll('.ticket-item').forEach(el => el.classList.remove('active'));
+  const item = document.getElementById(`item-${i}`);
+  if (item) { item.classList.add('active'); item.scrollIntoView({ block: 'nearest' }); }
+
+  const t = filtered[i];
+
+  const options = t.options.map(o => `
+    <div class="option ${o.is_correct ? 'correct' : 'wrong'}">
+      <span class="marker">${o.is_correct ? '✅' : '❌'}</span>
+      <span class="opt-text">${esc(o.text)}</span>
+    </div>
+  `).join('');
+
+  const imageBlock = t.has_image && t.image_path
+    ? `<img class="ticket-image" src="${esc(t.image_path)}" alt="Question image" onerror="this.style.display='none'">`
+    : '<div class="no-image">No image</div>';
+
+  const explanation = t.explanation
+    ? `<div class="explanation"><strong>Explanation:</strong>${esc(t.explanation)}</div>`
+    : '';
+
+  document.getElementById('main').innerHTML = `
+    <div class="ticket-card">
+      <div class="card-header">
+        <span class="q-num">Question ${t.question_num ?? t.id}</span>
+        <div class="q-text">${esc(t.question_text || '—')}</div>
+      </div>
+      ${imageBlock}
+      <div class="options">${options || '<p style="color:#a0aec0;font-size:.85rem">No options found</p>'}</div>
+      ${explanation}
+      <div class="nav-btns">
+        <button class="nav-btn prev" onclick="selectTicket(${i - 1})" ${i === 0 ? 'disabled' : ''}>← Previous</button>
+        <button class="nav-btn next" onclick="selectTicket(${i + 1})" ${i === filtered.length - 1 ? 'disabled' : ''}>Next →</button>
+      </div>
+    </div>
+  `;
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+</script>
+</body>
+</html>

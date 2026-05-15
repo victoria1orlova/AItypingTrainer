@@ -31,10 +31,18 @@ user_config.json
 *.session
 *.session-journal
 
-# Images (excluded from repo per project policy)
+# Local secrets (Telegram API keys for the Traffic Rules collector)
+credentials.py
+.env
+
+# Images
 *.png
 *.jpg
 *.jpeg
 *.gif
 *.webp
 *.bmp
+
+# Traffic Rules — private data (DB and ticket images stay local)
+TrafficRules/TrafficRules/tickets.db
+TrafficRules/TrafficRules/ticket_images/
